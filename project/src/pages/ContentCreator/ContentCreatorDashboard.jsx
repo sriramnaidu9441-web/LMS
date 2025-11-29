@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../../components/Card';
 import './ContentCreatorDashboard.css';
+import { useAuth } from '../../context/AuthContext';
 
 const ContentCreatorDashboard = () => {
   const [stats] = useState({
@@ -24,12 +25,47 @@ const ContentCreatorDashboard = () => {
   ]);
 
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [fullUser, setFullUser] = useState(null);
+
+  useEffect(() => {
+    if (!user) return;
+    const raw = localStorage.getItem('lmsUsers');
+    if (!raw) return;
+    try {
+      const users = JSON.parse(raw);
+      const found = users.find((u) => u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase());
+      setFullUser(found || null);
+    } catch (e) {
+      setFullUser(null);
+    }
+  }, [user]);
 
   return (
     <div className="content-creator-dashboard">
       <div className="dashboard-header">
-        <h1>Content Creator Dashboard</h1>
-        <p>Create and maintain high-quality educational content</p>
+        <div>
+          <h1>Content Creator Dashboard</h1>
+          <p>Create and maintain high-quality educational content</p>
+        </div>
+
+        <div className="profile-card">
+          <img
+            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'Creator')}&background=667eea&color=fff&size=128`}
+            alt={user?.name}
+            className="profile-avatar"
+          />
+          <div className="profile-info">
+            <div className="profile-name">{user?.name}</div>
+            <div className="profile-email">{user?.email}</div>
+            <div className="profile-role">Role: {user?.role}</div>
+            {fullUser?.createdAt && (
+              <div className="profile-joined">Joined: {new Date(fullUser.createdAt).toLocaleDateString()}</div>
+            )}
+            {fullUser?.phone && <div className="profile-phone">📞 {fullUser.phone}</div>}
+            {fullUser?.location && <div className="profile-location">📍 {fullUser.location}</div>}
+          </div>
+        </div>
       </div>
 
       <div className="stats-grid">

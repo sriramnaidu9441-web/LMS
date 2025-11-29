@@ -6,6 +6,7 @@ import Navigation from './components/Navigation';
 // Pages
 import Login from './pages/Login';
 import Unauthorized from './pages/Unauthorized';
+import Signup from './pages/Signup';
 
 // Admin Pages
 import AdminDashboard from './pages/Admin/AdminDashboard';
@@ -36,6 +37,7 @@ import CreateContent from './pages/ContentCreator/CreateContent';
 import QualityCheck from './pages/ContentCreator/QualityCheck';
 // Admin extras
 import AdminSettings from './pages/Admin/Settings';
+import Profile from './pages/Profile';
 
 import './App.css';
 
@@ -63,6 +65,7 @@ const AppRoutes = () => {
       <Navigation />
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         
         {/* Admin Routes */}
@@ -237,6 +240,16 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["content-creator"]}>
               <QualityCheck />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Profile - available to all authenticated roles */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute allowedRoles={["admin","instructor","student","content-creator"]}>
+              <Profile />
             </ProtectedRoute>
           }
         />

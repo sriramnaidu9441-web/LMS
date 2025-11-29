@@ -65,6 +65,10 @@ const Navigation = () => {
     }
   };
 
+  // always include profile link for authenticated users
+  const navLinks = [...getNavLinks()];
+  navLinks.push({ path: '/profile', label: 'Profile' });
+
   return (
     <nav className="navigation">
       <div className="nav-container">
@@ -73,7 +77,7 @@ const Navigation = () => {
           <span className="logo-text">EduLearn LMS</span>
         </Link>
         <div className="nav-links">
-          {getNavLinks().map((link) => (
+          {navLinks.map((link) => (
             <NavLink
               key={link.path}
               to={link.path}

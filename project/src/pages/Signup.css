@@ -1,0 +1,8 @@
+.signup-page{min-height:80vh;display:flex;align-items:center;justify-content:center;padding:3rem;background:linear-gradient(135deg,#705DBB 0%,#5a3fbf 60%,#2b1b63 100%)}
+.signup-card{width:420px;background:var(--card-bg);padding:2rem;border-radius:12px;box-shadow:0 10px 40px rgba(2,6,23,0.6);color:var(--text)}
+.signup-card h2{margin-bottom:1rem}
+.signup-form{display:flex;flex-direction:column;gap:0.75rem}
+.signup-form label{font-weight:700;color:var(--muted)}
+.signup-form .form-control{background:rgba(255,255,255,0.02)}
+.signup-foot{margin-top:1rem;color:var(--muted);font-size:0.95rem}
+.signup-foot a{color:var(--primary-500);text-decoration:none}

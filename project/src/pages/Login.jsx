@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
@@ -7,13 +7,28 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState('student');
+  const [captchaQuestion, setCaptchaQuestion] = useState('');
+  const [captchaAnswer, setCaptchaAnswer] = useState('');
+  const [captchaInput, setCaptchaInput] = useState('');
+  const [captchaError, setCaptchaError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+    // validate captcha first
+    if (!captchaInput || captchaInput.toString().trim() === '') {
+      setCaptchaError('Please solve the captcha');
+      return;
+    }
+    if (captchaInput.toString().trim() !== String(captchaAnswer)) {
+      setCaptchaError('Captcha is incorrect. Try again.');
+      regenerateCaptcha();
+      setCaptchaInput('');
+      return;
+    }
+    setCaptchaError('');
     // Simple client-side stub for login (replace with real API in production)
     if (!email || !password) {
       alert('Please enter your email and password.');
@@ -48,6 +63,22 @@ const Login = () => {
         navigate('/');
     }
   };
+
+  const generateCaptcha = () => {
+    // simple math captcha (addition)
+    const a = Math.floor(Math.random() * 9) + 1;
+    const b = Math.floor(Math.random() * 9) + 1;
+    setCaptchaQuestion(`${a} + ${b} = ?`);
+    setCaptchaAnswer(a + b);
+    setCaptchaInput('');
+    setCaptchaError('');
+  };
+
+  const regenerateCaptcha = () => generateCaptcha();
+
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
 
   return (
     <div className="login-page">
@@ -100,12 +131,30 @@ const Login = () => {
             />
           </div>
 
+          <div className="form-group captcha-group">
+            <label>Captcha</label>
+            <div className="captcha-row">
+              <div className="captcha-box">{captchaQuestion}</div>
+              <button type="button" className="captcha-refresh" onClick={regenerateCaptcha} title="Refresh captcha">↻</button>
+            </div>
+            <input
+              type="text"
+              value={captchaInput}
+              onChange={(e) => setCaptchaInput(e.target.value)}
+              placeholder="Enter result"
+              className="form-control"
+              aria-label="captcha-answer"
+            />
+            {captchaError && <div className="captcha-error">{captchaError}</div>}
+          </div>
+
           <button type="submit" className="btn btn-primary btn-block">
             Sign In
           </button>
         </form>
 
         {/* Demo credentials removed */}
+        <div className="login-foot">Don't have an account? <Link to="/signup">Sign up</Link></div>
       </div>
     </div>
   );
